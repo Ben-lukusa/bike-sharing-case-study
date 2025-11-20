@@ -1,0 +1,155 @@
+library(tidyverse)
+library(lubridate)
+library(janitor)
+q1_2019 <- read_csv("data/Divvy_Trips_2019_Q1.csv")
+q1_2020 <- read_csv("data/Divvy_Trips_2020_Q1.csv")
+
+glimpse(q1_2019)
+glimpse(q1_2020)
+
+q1_2019 <- clean_names(q1_2019)
+q1_2020 <- clean_names(q1_2020)
+
+q1_2020 <- q1_2020 %>%
+  rename(
+    ride_id = ride_id,
+    started_at = started_at,
+    ended_at = ended_at,
+    member_casual = member_casual
+  )
+q1_2019 <- q1_2019 %>%
+  rename(
+    ride_id = trip_id,
+    started_at = start_time,
+    ended_at = end_time,
+    member_casual = usertype
+  )
+q1_2019 <- q1_2019 %>%
+  mutate(member_casual = case_when(
+    member_casual == "Subscriber" ~ "member",
+    member_casual == "Customer" ~ "casual",
+    TRUE ~ member_casual
+  ))
+
+colnames(q1_2019)
+colnames(q1_2020)
+
+q1_2019_clean <- q1_2019 %>%
+  rename(
+    ride_id = ride_id,
+    started_at = started_at,
+    ended_at = ended_at,
+    
+    # 2019 → 2020 station names
+    start_station_id = from_station_id,
+    start_station_name = from_station_name,
+    end_station_id = to_station_id,
+    end_station_name = to_station_name,
+    
+    # Convert bikeid format (2020 uses rideable_type)
+    rideable_type = bikeid,
+    
+    # Keep membership column
+    member_casual = member_casual
+  ) %>%
+  # Add missing columns from 2020 (set to NA)
+  mutate(
+    start_lat = NA,
+    start_lng = NA,
+    end_lat = NA,
+    end_lng = NA
+  ) %>%
+  # Remove columns that 2020 doesn't have
+  select(-tripduration, -gender, -birthyear)
+
+q1_2020_clean <- q1_2020 %>%
+  select(
+    ride_id, rideable_type, started_at, ended_at,
+    start_station_name, start_station_id,
+    end_station_name, end_station_id,
+    start_lat, start_lng, end_lat, end_lng,
+    member_casual
+  )
+
+q1_2019_clean <- q1_2019_clean %>%
+  mutate(ride_id = as.character(ride_id))
+
+q1_2020_clean <- q1_2020_clean %>%
+  mutate(ride_id = as.character(ride_id))
+
+df <- df %>%
+  mutate(
+    started_at = ymd_hms(started_at),
+    ended_at   = ymd_hms(ended_at),
+    ride_length = as.numeric(difftime(ended_at, started_at, units = "mins")),
+    day_of_week = wday(started_at, label = TRUE, week_start = 1)
+  )
+
+df <- df %>%
+  filter(ride_length > 0, ride_length < 1440)
+
+df %>% group_by(member_casual) %>%
+  summarise(avg = mean(ride_length), median = median(ride_length))
+
+df %>% count(member_casual)
+
+df %>% 
+  count(member_casual, day_of_week) %>%
+  arrange(member_casual, day_of_week)
+
+df %>%
+  group_by(member_casual) %>%
+  summarise(avg = mean(ride_length)) %>%
+  ggplot(aes(member_casual, avg, fill = member_casual)) +
+  geom_col() +
+  labs(title = "Average Ride Length")
+
+df %>%
+  count(member_casual, day_of_week) %>%
+  ggplot(aes(day_of_week, n, fill = member_casual)) +
+  geom_col(position = "dodge") +
+  labs(title = "Rides by Day of Week")
+
+write_csv(df, "output/cleaned_cyclistic.csv")
+
+compare_df_cols(q1_2019_clean, q1_2020_clean)
+
+q1_2019_clean <- q1_2019_clean %>%
+  mutate(
+    ride_id = as.character(ride_id),
+    rideable_type = as.character(rideable_type),
+    
+    # convert 2019 columns from logical → numeric (to match 2020)
+    start_lat = as.numeric(start_lat),
+    start_lng = as.numeric(start_lng),
+    end_lat   = as.numeric(end_lat),
+    end_lng   = as.numeric(end_lng)
+  ) 
+
+q1_2019_clean <- q1_2019_clean %>%
+  mutate(
+    ride_id = as.character(ride_id),
+    rideable_type = as.character(rideable_type),
+    
+    start_lat = as.numeric(start_lat),
+    start_lng = as.numeric(start_lng),
+    end_lat   = as.numeric(end_lat),
+    end_lng   = as.numeric(end_lng)
+  )
+
+
+df <- df %>%
+  mutate(
+    started_at = ymd_hms(started_at),
+    ended_at   = ymd_hms(ended_at),
+    ride_length = as.numeric(difftime(ended_at, started_at, units = "mins")),
+    day_of_week = wday(started_at, label = TRUE)
+  ) %>%
+  filter(ride_length > 0, ride_length < 1440)
+
+summary(df$ride_length)
+table(df$member_casual)
+head(df)
+
+glimpse(df)
+summary(df$ride_length)
