@@ -1,40 +1,27 @@
-# bike-sharing-case-study
-How do annual members and casual riders use Cyclistic bikes differently? 
+# Cyclistic Case Study — Ben Lukusa
 
-This project analyzes Cyclistic’s (Divvy’s) 2019–2020 bike-share data using R. The goal is to understand rider behavior and identify opportunities to convert casual riders into annual members
+This project analyzes Cyclistic bike-share data to understand the differences between
+casual riders and annual members, and to recommend strategies for increasing member
+conversion.
 
-Tools that I used :
-•	R / Posit Cloud
-•	tidyverse
-•	lubridate
-•	janitor
-•	ggplot2
+## Key Findings
+- Casual riders take longer rides than members.
+- Members ride more frequently and more consistently across weekdays.
+- Casual riders peak heavily on weekends, showing leisure patterns.
+- Members show strong commuter patterns.
 
-Data Cleaning Steps:
-Merged 2019 + 2020 datasets
-Standardized column names
-Fixed type mismatches (character, numeric, datetime)
-Created engineered variables:
-ride_length (minutes)
-day_of_week
-Removed invalid ride lengths (≤0 or ≥1440 minutes)
+## Technologies Used
+- R (tidyverse, ggplot2, lubridate)
+- R Markdown
+- Posit Cloud
 
-Key Insights:
-Members vs Casual Ride Patterns
-Members → Weekday commuters
-Casuals → Weekend leisure riders
-Casuals take much longer rides
-Hourly Patterns
-Members peak around 7–9AM and 4–6PM
-Casual riders peak midday and weekends
-Station-Level Patterns
-Tourist/destination stations used more by casual riders
-Transit and downtown stations used more by members
+## Files
+- `data/cleaned_cyclistic.csv` — cleaned analysis dataset
+- `analysis/` — R scripts for cleaning, visualizing, and analyzing the data
+- `docs/` — written deliverables
+- `slides/` — slide content for PowerPoint version of the project
 
-My Recommendations: 
-Weekend-to-Member Campaign
-Commuter-focused membership perks
-Personalized in-app cost-savings nudges
+## Author
+**Ben Lukusa**
 
 
-If you'd like to discuss the project, collaborate, or review the analysis, feel free to reach out!
