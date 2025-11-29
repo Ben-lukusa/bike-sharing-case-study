@@ -1,0 +1,23 @@
+cyclistic-case-study-ben-lukusa/
+│
+├── data/
+│   └── cleaned_cyclistic.csv     # your cleaned dataset
+│
+├── analysis/
+│   ├── data_cleaning.R
+│   ├── exploratory_analysis.R
+│   ├── visualizations.R
+│   └── modeling_insights.R
+│
+├── docs/
+│   ├── Cyclistic_Case_Study_Report.md
+│   ├── portfolio_writeup.md
+│   ├── linkedin_post.txt
+│   └── findings_summary.md
+│
+├── slides/
+│   ├── slide_outline.md
+│   └── chart_descriptions.md
+│
+├── README.md
+└── LICENSE
